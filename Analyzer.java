@@ -5,6 +5,16 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import javax.swing.JFrame;
 
+/**
+ * CPU usage monitoring and prediction
+ * @author Aku Silvenius
+ * @version 1.0 
+ * 
+ * This class includes the analyis part of the program as well as
+ * the visualization of the data.
+ * 
+ */
+
 public class Analyzer extends JFrame {
 
 	private Data data;

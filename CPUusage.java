@@ -14,6 +14,10 @@ import javax.management.ObjectName;
  * @author Aku Silvenius
  * @version 1.0
  * 
+ * This class uses two Timers to get System CPU information and save the information.
+ * myTimer takes CPU load in .5s intervals and stores them into a data structure.
+ * myTimer2 calculates the average load for the past minute and saves it using the Save() method in class Data.
+ * 
  */
 
 public class CPUusage {
@@ -65,6 +69,7 @@ public class CPUusage {
 					}
 					
 					Data.save(data, run.DATAFILE);
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
