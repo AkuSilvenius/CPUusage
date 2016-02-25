@@ -10,11 +10,12 @@
 
 public class run {
 
-	public static final String DATAFILE = "data.dat";
+	//public static final String DATAFILE = "data.dat";
+	public static final String dataPath = "./data/CPUData.ser";
 	
 	public static void main(String [] args) throws Exception {
 		
-		Data d = Data.load(DATAFILE);
+		Data d = Data.load(dataPath);
 		
 		if(d==null) d = new Data();
 		

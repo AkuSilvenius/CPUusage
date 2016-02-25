@@ -23,6 +23,7 @@ import javax.management.ObjectName;
 public class CPUusage {
 
 	Data data;
+	String dataPath = "./data/CPUData.ser";
 	
 	public CPUusage(Data d) {
 		
@@ -37,7 +38,7 @@ public class CPUusage {
 			public void run() {
 				
 				try {
-					
+					System.out.println(getSystemCpuLoad());
 					data.cpu.add(getSystemCpuLoad());
 
 				} catch (Exception e) {
@@ -68,13 +69,13 @@ public class CPUusage {
 //						int hour = now.get(Calendar.HOUR_OF_DAY);
 					}
 					
-					Data.save(data, run.DATAFILE);
+					Data.save(data, dataPath);  //Data.save(data, run.DATAFILE);
 					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
-		}, 0, 60000); //executed in 1min intervals
+		}, 0, 5000); //executed in 1min intervals
 		
 	}
 
