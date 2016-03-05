@@ -38,15 +38,17 @@ public class CPUusage {
 			public void run() {
 				
 				try {
-					System.out.println(getSystemCpuLoad());
-					data.cpu.add(getSystemCpuLoad());
+					Double cpu = getSystemCpuLoad();
+					System.out.println(cpu);
+					data.data.put(System.currentTimeMillis(), cpu);
 
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
-		}, 0, 500); //executed in 0.5s intervals
+		}, 0, 150); //executed in 0.15s intervals
 		
+		/*
 		myTimer2.schedule(new TimerTask() {
 			
 			@Override
@@ -76,7 +78,7 @@ public class CPUusage {
 				}
 			}
 		}, 0, 60000); //executed in 1min intervals
-		
+		*/
 	}
 
 	public static double getSystemCpuLoad() throws Exception {
@@ -89,8 +91,7 @@ public class CPUusage {
 
 		Attribute att = (Attribute)list.get(0);
 		Double value = (Double)att.getValue();
-
-		return ((int)(value*1000)/10.0);
+		return value;
 	}
 	
 }

@@ -3,7 +3,11 @@
 
 import java.io.*;
 import java.io.Serializable;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 /**
  * CPU usage monitoring and prediction
@@ -19,8 +23,14 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 public class Data implements Serializable {
 
 	// has to be Concurrent in order to serialize
-	public ConcurrentLinkedDeque<Integer> timestamp = new ConcurrentLinkedDeque<Integer>();
-	public ConcurrentLinkedDeque<Double> cpu = new ConcurrentLinkedDeque<Double>();
+	//public ConcurrentLinkedDeque<Long> timestamp = new ConcurrentLinkedDeque<>();
+	//public ConcurrentLinkedDeque<Double> cpu = new ConcurrentLinkedDeque<>();
+	
+	public ConcurrentMap<Long, Double> data;
+	
+	public Data() {
+		data = new ConcurrentSkipListMap<>();
+	}
 
 	public static void save(Data d, String filePath) {
 
@@ -40,7 +50,7 @@ public class Data implements Serializable {
 
 	public static Data load(String filePath) {
 
-		// lataa ja palauta d tai null jos ei löydy
+		// lataa ja palauta d tai null jos ei lï¿½ydy
 
 		Data d = null;
 
@@ -51,7 +61,7 @@ public class Data implements Serializable {
 			in.close();
 			fileIn.close();
 
-			System.out.println("d.cpu: " + d.cpu);
+			//System.out.println("d.cpu: " + d.cpu);
 			return d;
 
 		} catch (IOException i) {
