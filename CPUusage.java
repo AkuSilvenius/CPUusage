@@ -75,7 +75,7 @@ public class CPUusage {
 					e.printStackTrace();
 				}
 			}
-		}, 0, 5000); //executed in 1min intervals
+		}, 0, 60000); //executed in 1min intervals
 		
 	}
 
