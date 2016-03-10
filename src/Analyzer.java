@@ -30,6 +30,19 @@ public class Analyzer {
 	
 	private Vector<Integer> hits = new Vector<>();
 	
+	public OTTS findOutBestSimilarity(ArrayList<OTTS> otts) {
+		
+		OTTS bestOTTS = otts.iterator().next();
+		
+		for (OTTS ots : otts) {
+			if (ots.similarity < bestOTTS.similarity) {
+				bestOTTS = ots;
+			}
+		}
+		
+		return bestOTTS;
+	}
+	
 	public SortedMap<Long, Double> analyze(Data data) {
 
 		ConcurrentMap<Long, Double> loadedData = Data.load("./data/CPUData.ser");
@@ -38,22 +51,28 @@ public class Analyzer {
 		System.out.println(data.data.size());
 		
 		if (data.data.size() >= analyzeWindowSize && loadedData.size() >= analyzeWindowSize*2) {
-
-			HashMap<Integer, Double> offsetSimilarityMap = new HashMap<Integer, Double>();
+			
+			ArrayList<OTTS> otts = new ArrayList<OTTS>();
+			
 			int offset=0;
 			
 			for (int j = 0; j < analyzeWindowSize; j++) {
+				Long timestamp = 0L;
+				
 				List<Double> similarityValueList = new ArrayList<Double>();
 				
 				Iterator<Double> iteratorLoadedData = loadedData.values().iterator(); //Tähän vaikuttaa offset
+				Iterator<Long> iteratorLoadedDataTS = loadedData.keySet().iterator();
 				Iterator<Double> iteratorCurrentData = data.data.values().iterator();
 				
 				for (int i = 0; i < offset; i++) { //Skip values from loadedData according to offset
 					iteratorLoadedData.next();
+					iteratorLoadedDataTS.next();
 				}
 				
 				for (int i = 0; i < analyzeWindowSize - 5; i++){
 					 similarityValueList.add(Math.abs(iteratorLoadedData.next() - iteratorCurrentData.next()));
+					 timestamp = iteratorLoadedDataTS.next();
 				}
 				
 				Double similarity = 0.0;
@@ -62,9 +81,19 @@ public class Analyzer {
 					similarity = similarity + d;
 				}
 				offset++;
-				offsetSimilarityMap.put(offset, similarity);
+				otts.add(new OTTS(offset, timestamp ,similarity));
 			}
-			System.out.println(offsetSimilarityMap);
+			
+			
+			for (OTTS ots : otts) {
+				System.out.println(ots.offset);
+				System.out.println(ots.similarity);
+				System.out.println(ots.timestamp);
+			}
+			
+			OTTS bestOTTS = findOutBestSimilarity(otts);
+			System.out.println("BesTOTTS timestamp: " + bestOTTS.timestamp + " BestOTTS similarity: " + bestOTTS.similarity + " BestOTTS offset: " + bestOTTS.offset);
+			
 		} else {
 			System.out.println("not enough data");
 		}
@@ -79,10 +108,9 @@ public class Analyzer {
 			if(data.data.size() < 100) d = 5; else d = data.data.values().iterator().next();
 			future.put(System.currentTimeMillis() + i*1000, d+(Math.random()*0.1f));
 		}
-			
 		return future;
-	
 	}
+	
 	
 }
 

@@ -32,11 +32,17 @@ public class CPUusage {
 		Timer myTimer2 = new Timer();
 		Timer myTimer = new Timer();
 		
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
 		myTimer.schedule(new TimerTask() {
 			
 			@Override
 			public void run() {
-				
 				try {
 					Double cpu = getSystemCpuLoad();
 					System.out.println(cpu);
