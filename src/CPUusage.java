@@ -45,7 +45,7 @@ public class CPUusage {
 			public void run() {
 				try {
 					Double cpu = getSystemCpuLoad();
-					System.out.println(cpu);
+				//	System.out.println(cpu);
 					data.data.put(System.currentTimeMillis(), cpu);
 
 				} catch (Exception e) {

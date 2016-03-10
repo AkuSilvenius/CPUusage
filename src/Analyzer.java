@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.Vector;
@@ -58,24 +59,38 @@ public class Analyzer {
 		return temp;
 	}
 	
+	public SortedMap<Long, Double> calculateFuture(Long timestamp, ConcurrentMap<Long, Double> loadedData) {
+		
+		Iterator<Double> CPULoad = loadedData.values().iterator(); 
+		Iterator<Long> TS = loadedData.keySet().iterator();	
+		SortedMap future = new TreeMap<Long, Double>();
+		while (CPULoad.hasNext()) {
+			Long nextTS = TS.next();
+			CPULoad.next();
+			if (timestamp.equals(nextTS)) {
+				System.out.println("hurray");
+				for (int i = 0; i < analyzeWindowSize; i++) {
+					future.put(TS.next(), CPULoad.next());
+				}
+				return future;
+			}
+		}
+		return null;
+	}
+	
 	public SortedMap<Long, Double> analyze(Data data) {
 		
 		List<Double> reversedData = reverseData(data);
 		
 		ConcurrentMap<Long, Double> loadedData = Data.load("./data/CPUData.ser");
-		
-		System.out.println(loadedData.size());
-		System.out.println(data.data.size());
+		Long timestamp = 0L;
+		OTTS bestOTTS = null;
 		
 		if (data.data.size() >= analyzeWindowSize && loadedData.size() >= analyzeWindowSize*2) {
 			
 			ArrayList<OTTS> otts = new ArrayList<OTTS>();
-			
 			int offset=0;
-			
 			for (int j = 0; j < analyzeWindowSize; j++) {
-				Long timestamp = 0L;
-				
 				List<Double> similarityValueList = new ArrayList<Double>();
 				
 				Iterator<Double> iteratorLoadedData = loadedData.values().iterator(); //Tähän vaikuttaa offset
@@ -85,29 +100,18 @@ public class Analyzer {
 					iteratorLoadedData.next();
 					iteratorLoadedDataTS.next();
 				}
-				
 				for (int i = 0; i < analyzeWindowSize; i++){
 					 similarityValueList.add(Math.abs(iteratorLoadedData.next() - reversedData.get(i)));
 					 timestamp = iteratorLoadedDataTS.next();
 				}
-				
 				Double similarity = 0.0;
-				
 				for (Double d : similarityValueList) {
 					similarity = similarity + d;
 				}
 				offset++;
 				otts.add(new OTTS(offset, timestamp ,similarity));
 			}
-			
-			
-			for (OTTS ots : otts) {
-				System.out.println(ots.offset);
-				System.out.println(ots.similarity);
-				System.out.println(ots.timestamp);
-			}
-			
-			OTTS bestOTTS = findOutBestSimilarity(otts);
+			bestOTTS = findOutBestSimilarity(otts);
 			System.out.println("BesTOTTS timestamp: " + bestOTTS.timestamp + " BestOTTS similarity: " + bestOTTS.similarity + " BestOTTS offset: " + bestOTTS.offset);
 			
 		} else {
@@ -117,16 +121,17 @@ public class Analyzer {
 		
 		//Tähän pitäisi sitten vielä laittaa että hakee mapista mikä oli paras offset, ja sitten sen offsetin mukaan hakee tietokannan arraystä sopivat arvot.
 		
-		SortedMap future = new TreeMap<Long, Double>();
+		/*SortedMap future = new TreeMap<Long, Double>();
 		
 		for(int i = 0; i < 100; i++){
 			double d;
 			if(data.data.size() < 100) d = 5; else d = data.data.values().iterator().next();
 			future.put(System.currentTimeMillis() + i*1000, d+(Math.random()*0.1f));
-		}
-		return future;
+		}*/
+		
+		System.out.println(calculateFuture(bestOTTS.timestamp, data.data));
+		
+		return calculateFuture(bestOTTS.timestamp, data.data);
 	}
-	
-	
 }
 

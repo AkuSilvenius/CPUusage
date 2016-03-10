@@ -29,7 +29,6 @@ public class Data implements Serializable {
 	}
 
 	public static void save(Data d, String filePath) {
-
 		// Serialize and save data. What is the "String file" for?
 		try {
 			FileOutputStream fileOut = new FileOutputStream(filePath);
