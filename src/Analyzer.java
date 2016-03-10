@@ -64,13 +64,17 @@ public class Analyzer {
 		Iterator<Double> CPULoad = loadedData.values().iterator(); 
 		Iterator<Long> TS = loadedData.keySet().iterator();	
 		SortedMap future = new TreeMap<Long, Double>();
+		
+		Long futureTime = System.currentTimeMillis();
+		
 		while (CPULoad.hasNext()) {
 			Long nextTS = TS.next();
 			CPULoad.next();
 			if (timestamp.equals(nextTS)) {
 				System.out.println("hurray");
 				for (int i = 0; i < analyzeWindowSize; i++) {
-					future.put(TS.next(), CPULoad.next());
+					futureTime = futureTime + 150L;
+					future.put(futureTime, CPULoad.next());
 				}
 				return future;
 			}
