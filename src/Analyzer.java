@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -43,8 +44,24 @@ public class Analyzer {
 		return bestOTTS;
 	}
 	
+	public List<Double> reverseData(Data data) {
+		
+		Iterator<Double> iteratorCurrentData = data.data.values().iterator();
+		List<Double> temp = new ArrayList<Double>();
+		
+		while (iteratorCurrentData.hasNext()) {
+			temp.add(iteratorCurrentData.next()); 
+		}
+		
+		Collections.reverse(temp);
+		
+		return temp;
+	}
+	
 	public SortedMap<Long, Double> analyze(Data data) {
-
+		
+		List<Double> reversedData = reverseData(data);
+		
 		ConcurrentMap<Long, Double> loadedData = Data.load("./data/CPUData.ser");
 		
 		System.out.println(loadedData.size());
@@ -62,16 +79,15 @@ public class Analyzer {
 				List<Double> similarityValueList = new ArrayList<Double>();
 				
 				Iterator<Double> iteratorLoadedData = loadedData.values().iterator(); //Tähän vaikuttaa offset
-				Iterator<Long> iteratorLoadedDataTS = loadedData.keySet().iterator();
-				Iterator<Double> iteratorCurrentData = data.data.values().iterator();
+				Iterator<Long> iteratorLoadedDataTS = loadedData.keySet().iterator(); //ja tähän
 				
 				for (int i = 0; i < offset; i++) { //Skip values from loadedData according to offset
 					iteratorLoadedData.next();
 					iteratorLoadedDataTS.next();
 				}
 				
-				for (int i = 0; i < analyzeWindowSize - 5; i++){
-					 similarityValueList.add(Math.abs(iteratorLoadedData.next() - iteratorCurrentData.next()));
+				for (int i = 0; i < analyzeWindowSize; i++){
+					 similarityValueList.add(Math.abs(iteratorLoadedData.next() - reversedData.get(i)));
 					 timestamp = iteratorLoadedDataTS.next();
 				}
 				

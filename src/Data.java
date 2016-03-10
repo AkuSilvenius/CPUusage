@@ -21,10 +21,6 @@ import java.util.concurrent.ConcurrentSkipListSet;
  */
 
 public class Data implements Serializable {
-
-	// has to be Concurrent in order to serialize
-	//public ConcurrentLinkedDeque<Long> timestamp = new ConcurrentLinkedDeque<>();
-	//public ConcurrentLinkedDeque<Double> cpu = new ConcurrentLinkedDeque<>();
 	
 	public ConcurrentMap<Long, Double> data;
 	
