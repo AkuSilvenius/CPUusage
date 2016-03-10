@@ -15,20 +15,16 @@ public class run {
 	
 	public static void main(String [] args) throws Exception {
 		
-		Data d = new Data();
+
+		Data d = Data.loadClass(dataPath);
+
+		if(d==null) d = new Data();
+		
 		Analyzer a = new Analyzer();
 		new CPUusage(d);
 		
 		new AnalyzerGUI(a, d);
-		
-		/*
-		Data d = Data.load(dataPath);
-		
-		if(d==null) d = new Data();
-		
-		new CPUusage(d);
-		new Analyzer(d);
-		*/
+
 	}
 
 

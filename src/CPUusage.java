@@ -48,37 +48,21 @@ public class CPUusage {
 			}
 		}, 0, 150); //executed in 0.15s intervals
 		
-		/*
+		
 		myTimer2.schedule(new TimerTask() {
-			
 			@Override
 			public void run() {
 				try {
 					Calendar now = Calendar.getInstance();
-					if (now.get(Calendar.MINUTE) < 10) {
-						System.out.println("Time: " + now.get(Calendar.HOUR_OF_DAY) + ":0" +  now.get(Calendar.MINUTE));
-						System.out.println("CPU (%): " + data.cpu.getLast());
-					} else {
-						System.out.println("Time: " + now.get(Calendar.HOUR_OF_DAY) + ":" +  now.get(Calendar.MINUTE));
-						System.out.println("CPU (%): " + data.cpu.getLast());
-					}
-					if (now.get(Calendar.MINUTE) == 00) {
-						double x = 0.0;
-						while (!data.cpu.isEmpty()) {
-							x += (double)data.cpu.poll();
-						}
-						x = x / data.cpu.size();
-//						int hour = now.get(Calendar.HOUR_OF_DAY);
-					}
-					
+					System.out.println("Saved data");
 					Data.save(data, dataPath);  //Data.save(data, run.DATAFILE);
 					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
-		}, 0, 60000); //executed in 1min intervals
-		*/
+		}, 0, 15000); //Divide by 1000 to get execution schedule in s
+		
 	}
 
 	public static double getSystemCpuLoad() throws Exception {
