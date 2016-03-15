@@ -28,9 +28,7 @@ import javax.swing.JFrame;
 
 public class Analyzer {
 
-	private static final int analyzeWindowSize = 50;
-	
-	private Vector<Integer> hits = new Vector<>();
+	private static final int analyzeWindowSize = 500;
 	
 	public OTTS findOutBestSimilarity(ArrayList<OTTS> otts) {
 		
@@ -63,7 +61,7 @@ public class Analyzer {
 		
 		Iterator<Double> CPULoad = loadedData.values().iterator(); 
 		Iterator<Long> TS = loadedData.keySet().iterator();	
-		SortedMap future = new TreeMap<Long, Double>();
+		SortedMap<Long, Double> future = new TreeMap<Long, Double>();
 		
 		Long futureTime = System.currentTimeMillis();
 		
@@ -71,9 +69,8 @@ public class Analyzer {
 			Long nextTS = TS.next();
 			CPULoad.next();
 			if (timestamp.equals(nextTS)) {
-				System.out.println("hurray");
 				for (int i = 0; i < analyzeWindowSize; i++) {
-					futureTime = futureTime + 150L;
+					futureTime = futureTime + new Long(run.executionInterval);
 					future.put(futureTime, CPULoad.next());
 				}
 				return future;
@@ -120,20 +117,8 @@ public class Analyzer {
 			
 		} else {
 			System.out.println("not enough data");
+			return null;
 		}
-		
-		
-		//Tähän pitäisi sitten vielä laittaa että hakee mapista mikä oli paras offset, ja sitten sen offsetin mukaan hakee tietokannan arraystä sopivat arvot.
-		
-		/*SortedMap future = new TreeMap<Long, Double>();
-		
-		for(int i = 0; i < 100; i++){
-			double d;
-			if(data.data.size() < 100) d = 5; else d = data.data.values().iterator().next();
-			future.put(System.currentTimeMillis() + i*1000, d+(Math.random()*0.1f));
-		}*/
-		
-		System.out.println(calculateFuture(bestOTTS.timestamp, data.data));
 		
 		return calculateFuture(bestOTTS.timestamp, data.data);
 	}

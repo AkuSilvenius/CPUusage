@@ -29,7 +29,6 @@ public class Data implements Serializable {
 	}
 
 	public static void save(Data d, String filePath) {
-		// Serialize and save data. What is the "String file" for?
 		try {
 			FileOutputStream fileOut = new FileOutputStream(filePath);
 			ObjectOutputStream out = new ObjectOutputStream(fileOut);
@@ -45,7 +44,7 @@ public class Data implements Serializable {
 
 	public static ConcurrentMap<Long, Double> load(String filePath) {
 
-		// lataa ja palauta d tai null jos ei l�ydy
+		// lataa ja palauta d tai null jos ei loydy
 
 		Data d = null;
 		

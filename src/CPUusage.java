@@ -23,7 +23,6 @@ import javax.management.ObjectName;
 public class CPUusage {
 
 	Data data;
-	String dataPath = "./data/CPUData.ser";
 	
 	public CPUusage(Data d) {
 		
@@ -33,14 +32,13 @@ public class CPUusage {
 		Timer myTimer = new Timer();
 		
 		try {
-			Thread.sleep(1000);
+			Thread.sleep(1000); //Prevent's a bug where the first two CPU loads come off as "-1"
 		} catch (InterruptedException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		
 		myTimer.schedule(new TimerTask() {
-			
 			@Override
 			public void run() {
 				try {
@@ -52,7 +50,7 @@ public class CPUusage {
 					e.printStackTrace();
 				}
 			}
-		}, 0, 150); //executed in 0.15s intervals
+		}, 0, run.executionInterval); //executed in 0.15s intervals
 		
 		
 		myTimer2.schedule(new TimerTask() {
@@ -61,13 +59,13 @@ public class CPUusage {
 				try {
 					Calendar now = Calendar.getInstance();
 					System.out.println("Saved data");
-					Data.save(data, dataPath);  //Data.save(data, run.DATAFILE);
+					Data.save(data, run.dataPath);
 					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
-		}, 0, 15000); //Divide by 1000 to get execution schedule in s
+		}, 0, run.saveInterval); //Divide by 1000 to get execution schedule in s
 		
 	}
 

@@ -9,9 +9,11 @@
  */
 
 public class run {
-
-	//public static final String DATAFILE = "data.dat";
+	
+	
 	public static final String dataPath = "./data/CPUData.ser";
+	public static final int executionInterval = 150; //milliseconds
+	public static final int saveInterval = 15000;
 	
 	public static void main(String [] args) throws Exception {
 		
