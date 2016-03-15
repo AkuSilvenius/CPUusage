@@ -50,7 +50,7 @@ public class CPUusage {
 					e.printStackTrace();
 				}
 			}
-		}, 0, run.executionInterval); //executed in 0.15s intervals
+		}, 0, run.executionInterval); 
 		
 		
 		myTimer2.schedule(new TimerTask() {
@@ -65,7 +65,7 @@ public class CPUusage {
 					e.printStackTrace();
 				}
 			}
-		}, 0, run.saveInterval); //Divide by 1000 to get execution schedule in s
+		}, 0, run.saveInterval); 
 		
 	}
 
