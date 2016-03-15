@@ -70,7 +70,7 @@ public class Analyzer {
 			if (bestOffSetTimestamp.equals(nextTS)) {
 				for (int i = 0; i < analyzeWindowSize; i++) {
 					time = time + new Long(run.executionInterval);
-					future.put(time, CPULoad.next());
+					future.put(time, CPULoad.next()); //CPULoad doesn't always have a next value. "java.util.NoSuchElementException"
 				}
 				return future;
 			}
