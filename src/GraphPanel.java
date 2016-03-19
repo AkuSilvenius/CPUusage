@@ -7,12 +7,15 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 public class GraphPanel extends JPanel {
  
 	private static final int graphHeight = 400;
 	private static final int graphVOffset = 400;
 	private float dataScaler = 0.5f;
+	
+	private JScrollPane scrollPane = null;
 	
 	int maxX = 0;
 	
@@ -35,6 +38,10 @@ public class GraphPanel extends JPanel {
 				}
 			}
 		}, 0, 25);
+	}
+	
+	public void setScrollPane(JScrollPane sp){
+		this.scrollPane = sp;
 	}
 	
 	public void setDataScale(float scale){
@@ -94,7 +101,9 @@ public class GraphPanel extends JPanel {
 
 	private void setNewWidth() {
 		GraphPanel.this.setPreferredSize(new Dimension(maxX, graphHeight));
-		this.getParent().repaint();
+		
+		//TODO: FIX THIS TO SCROLL TO NICE POSITION AND SET SIZES ETC.
+		if(this.scrollPane != null) scrollPane.setPreferredSize(new Dimension(maxX, graphHeight));
 	}
 	
 }

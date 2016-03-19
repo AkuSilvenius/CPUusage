@@ -38,9 +38,11 @@ public class AnalyzerGUI extends JFrame {
 		
 		dataScrollPane.setViewportView(gp);
 		dataScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
-		dataScrollPane.setAutoscrolls(true);
+		//dataScrollPane.setAutoscrolls(true);
 		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+		gp.setScrollPane(dataScrollPane);
+		
 		buttonAnalyze.setText("Guess future!");
 
 		buttonAnalyze.addActionListener(new ActionListener() {
