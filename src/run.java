@@ -12,7 +12,10 @@ public class run {
 	
 	
 	public static final String dataPath = "./data/CPUData.ser";
-	public static final String oldDataPath = "./data/CPUData_old.ser";
+	public static final String oldDataPath = "./data/CPUData.ser";
+	
+	//TODO: make this point to a known good reference data captured in "lab conditions"
+	//public static final String oldDataPath = "./data/CPUData_old.ser";
 	public static final int executionInterval = 150; //milliseconds
 	public static final int saveInterval = 15000;
 	

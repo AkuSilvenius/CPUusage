@@ -29,6 +29,8 @@ public class Data implements Serializable {
 	}
 
 	public static void save(Data d, String filePath) {
+		(new Throwable()).printStackTrace();
+		
 		try {
 			FileOutputStream fileOut = new FileOutputStream(filePath);
 			ObjectOutputStream out = new ObjectOutputStream(fileOut);
@@ -73,7 +75,8 @@ public class Data implements Serializable {
 	public static Data loadClass(String filePath) {
 
 		// lataa ja palauta d tai null jos ei l�ydy
-
+		(new Throwable()).printStackTrace();
+		
 		Data d = null;
 
 		try {
