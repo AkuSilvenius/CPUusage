@@ -1,5 +1,5 @@
 
-public class OTTS{
+public class OTTS implements Comparable<OTTS>{
 	int offset;
 	Long timestamp;
 	Double similarity;
@@ -9,4 +9,17 @@ public class OTTS{
 		this.timestamp = timestamp;
 		this.similarity = similarity;
 	}
+
+	@Override
+	public int compareTo(OTTS o) {
+		
+		if(this.similarity > o.similarity){
+			return 1;
+		} else if (this.similarity < o.similarity){
+			return -1;
+		} else {
+			return 0;
+		} 
+	}
+	
 }

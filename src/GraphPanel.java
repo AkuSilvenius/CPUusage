@@ -66,11 +66,10 @@ public class GraphPanel extends JPanel {
 			ly = y;
 			lx = x;
 			//If we draw wider than widest, make wider <3
-			maxX = x;
-			/*if(x > maxX){
+			if(x > maxX){
 				maxX = x;
 				setNewWidth();
-			}*/
+			}
 		}
 		
 		if(future != null){
@@ -84,14 +83,12 @@ public class GraphPanel extends JPanel {
 				ly = y;
 				lx = x;
 				//If we draw wider than widest, make wider <3
-				maxX = x;
-				/*if(x > maxX){
+				if(x > maxX){
 					maxX = x;
 					setNewWidth();
-				}*/
+				}
 			}
 		}
-		setNewWidth();
 	
 	}
 

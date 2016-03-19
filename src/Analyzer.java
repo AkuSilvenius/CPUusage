@@ -13,8 +13,11 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.function.Consumer;
 
 import javax.swing.JFrame;
+import javax.swing.text.AbstractDocument.BranchElement;
 
 /**
  * CPU usage monitoring and prediction
@@ -29,16 +32,18 @@ import javax.swing.JFrame;
 public class Analyzer {
 
 	private static final int analyzeWindowSize = 500; //How far do we analyze into the past and how far we predict into the future.
+	private static final int maximumOffsetFromPresent = 1000;
+	private static final int analyzeSourceWindowSize = 2000; //How far do we analyze into the past and how far we predict into the future.
 	
 	//Takes an OTTS array as an parameter and then return the OTTS with the lowest(best) similarity value.
-	public OTTS findOutBestSimilarity(ArrayList<OTTS> otts) {	
-		OTTS bestOTTS = otts.iterator().next();
-		for (OTTS ots : otts) {
-			if (ots.similarity < bestOTTS.similarity) {
-				bestOTTS = ots;
-			}
-		}
-		return bestOTTS;
+	public ArrayList<OTTS> findOutBestSimilarities(List<OTTS> otts, int numOTTSs) {
+		ArrayList<OTTS> bestOTTSs = new ArrayList<>();
+		
+		Collections.sort(otts);
+		
+		bestOTTSs.addAll(otts.subList(0, numOTTSs));
+		
+		return bestOTTSs;
 	}
 	
 	//Reverses the values from data.data. Only returns the processor load values
@@ -66,7 +71,7 @@ public class Analyzer {
 		
 		while (CPULoad.hasNext()) {
 			Long nextTS = TS.next();
-			CPULoad.next();
+			//CPULoad.next();
 			if (bestOffSetTimestamp.equals(nextTS)) {
 				for (int i = 0; i < analyzeWindowSize; i++) {
 					time = time + new Long(run.executionInterval);
@@ -81,39 +86,45 @@ public class Analyzer {
 	public SortedMap<Long, Double> analyze(Data data) {
 		
 		//ReverseData because we want to predict from the end of the saved data, not from the beginning. First data vs last data.
-		List<Double> reversedData = reverseData(data);
+		//List<Double> reversedData = reverseData(data);
 		
-		ConcurrentMap<Long, Double> loadedData = Data.load(run.dataPath);
+		Double[] nearPastDataValues = (Double[])data.data.values().toArray();
+		Long[] nearPastDataTimes = (Long[])data.data.values().toArray();
+		
+		Data oldData = Data.loadClass(run.oldDataPath);
+		Double[] loadedDataValues = (Double[])oldData.data.values().toArray();
+		Long[] loadedDataTimes = (Long[])oldData.data.values().toArray();
+		
 		Long timestamp = 0L;
-		OTTS bestOTTS = null;
+		ArrayList<OTTS> bestOTTSs = null;
 		
-		if (data.data.size() >= analyzeWindowSize && loadedData.size() >= analyzeWindowSize*2) {
+		Long bestTimestamp = 0L;
+		ConcurrentMap<Long, Double> guessedData = new ConcurrentSkipListMap<>();
+		
+		if (loadedDataValues.length >= maximumOffsetFromPresent && nearPastDataValues.length >= analyzeWindowSize) {
 			
-			ArrayList<OTTS> otts = new ArrayList<OTTS>();
-			int offset=0;
-			for (int j = 0; j < analyzeWindowSize; j++) {
-				List<Double> similarityValueList = new ArrayList<Double>();
+			ArrayList<OTTS> ottsCandidates = new ArrayList<OTTS>();
+			for (int offset = 0; offset < maximumOffsetFromPresent; offset++) {
 				
-				Iterator<Double> iteratorLoadedData = loadedData.values().iterator(); //Tähän vaikuttaa offset
-				Iterator<Long> iteratorLoadedDataTS = loadedData.keySet().iterator(); //ja tähän
-				
-				for (int i = 0; i < offset; i++) { //Skip values from loadedData according to offset
-					iteratorLoadedData.next();
-					iteratorLoadedDataTS.next();
-				}
-				for (int i = 0; i < analyzeWindowSize; i++){
-					 similarityValueList.add(Math.abs(iteratorLoadedData.next() - reversedData.get(i)));
-					 timestamp = iteratorLoadedDataTS.next();
-				}
+				timestamp = loadedDataTimes[offset];
 				Double similarity = 0.0;
-				for (Double d : similarityValueList) {
-					similarity = similarity + d;
+				for (int i = 0; i < analyzeWindowSize; i++){
+					//This made sense when it was made <3 Don't alter much.
+					similarity += Math.abs(loadedDataValues[loadedDataValues.length-1-analyzeWindowSize-offset+i] - nearPastDataValues[i]);
 				}
-				otts.add(new OTTS(offset, timestamp ,similarity));
-				offset++;
+				//Offset is most probably useless here.
+				ottsCandidates.add(new OTTS(offset, timestamp ,similarity));
 			}
-			bestOTTS = findOutBestSimilarity(otts);
-			System.out.println("BesTOTTS timestamp: " + bestOTTS.timestamp + " BestOTTS similarity: " + bestOTTS.similarity + " BestOTTS offset: " + bestOTTS.offset);
+			
+			bestOTTSs = findOutBestSimilarities(ottsCandidates, 5);
+			
+			
+			
+			//TODO: Laske keskiarvot bestOTTSs:tÃ¤ ja survo keskiarvo guessedData taulukkoon
+			
+			
+			
+			//System.out.println("BesTOTTS timestamp: " + bestOTTS.timestamp + " BestOTTS similarity: " + bestOTTS.similarity + " BestOTTS offset: " + bestOTTS.offset);
 			
 		} else {
 			double neededRunTime = (double) ( (double) analyzeWindowSize * ((double) run.executionInterval/1000))*2;
@@ -121,7 +132,7 @@ public class Analyzer {
 			return null;
 		}
 		
-		return calculateFuture(bestOTTS.timestamp, data.data);
+		return calculateFuture(bestTimestamp, guessedData);
 	}
 }
 

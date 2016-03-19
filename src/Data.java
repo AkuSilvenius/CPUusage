@@ -42,6 +42,7 @@ public class Data implements Serializable {
 
 	}
 
+	/*
 	public static ConcurrentMap<Long, Double> load(String filePath) {
 
 		// lataa ja palauta d tai null jos ei loydy
@@ -67,10 +68,11 @@ public class Data implements Serializable {
 		return d.data;
 
 	}
+	*/
 
 	public static Data loadClass(String filePath) {
 
-		// lataa ja palauta d tai null jos ei löydy
+		// lataa ja palauta d tai null jos ei lï¿½ydy
 
 		Data d = null;
 
