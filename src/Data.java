@@ -26,8 +26,6 @@ public class Data implements Serializable {
 	}
 
 	public static void save(Data d, String filePath) {
-		(new Throwable()).printStackTrace();
-		
 		try {
 			FileOutputStream fileOut = new FileOutputStream(filePath);
 			ObjectOutputStream out = new ObjectOutputStream(fileOut);

@@ -43,6 +43,7 @@ public class CPUusage {
 				try {
 					Double cpu = getSystemCpuLoad();
 					data.data.put(System.currentTimeMillis(), cpu);
+					//System.out.println(cpu);
 
 				} catch (Exception e) {
 					e.printStackTrace();

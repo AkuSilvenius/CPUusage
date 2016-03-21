@@ -23,8 +23,8 @@ import java.util.function.BiConsumer;
 
 public class Analyzer {
 
-	private static final int analyzeWindowSize = 500; //How far do we analyze into the past and how far we predict into the future.
-	private static final int maximumOffsetFromPresent = 1000; //How far do we analyze into the past and how far we predict into the future.
+	
+	private static final int maximumOffsetFromPresent = 1000; //We must have more values than this in database to be able to predict. Needs to be twice the analyzeWindowSize or more.
 	private static final int numAverages = 5;
 
 	//Takes an OTTS array as an parameter and then return the OTTS with the lowest(best) similarity value.
@@ -36,20 +36,6 @@ public class Analyzer {
 		bestOTTSs.addAll(otts.subList(0, numOTTSs));
 
 		return bestOTTSs;
-	}
-
-	//Reverses the values from data.data. Only returns the processor load values
-	public List<Double> reverseData(Data data) {
-
-		Iterator<Double> iteratorCurrentData = data.data.values().iterator();
-		List<Double> temp = new ArrayList<Double>();
-
-		while (iteratorCurrentData.hasNext()) {
-			temp.add(iteratorCurrentData.next()); 
-		}
-		Collections.reverse(temp);
-
-		return temp;
 	}
 
 	//Takes in the best offsets timestamp and the data from database. Returns a map of predicted timestamps and cpu loads
@@ -65,7 +51,7 @@ public class Analyzer {
 			Long nextTS = TS.next();
 			//CPULoad.next();
 			if (bestOffSetTimestamp.equals(nextTS)) {
-				for (int i = 0; i < analyzeWindowSize; i++) {
+				for (int i = 0; i < run.analyzeWindowSize; i++) {
 					time = time + new Long(run.executionInterval);
 					future.put(time, CPULoad.next()); //CPULoad doesn't always have a next value. "java.util.NoSuchElementException"
 				}
@@ -92,6 +78,7 @@ public class Analyzer {
 		ArrayList<Long> nearPastDataTimes = new ArrayList<>();
 		nearPastDataTimes.addAll(data.data.keySet());
 		
+
 		ArrayList<Double> loadedDataValues = new ArrayList<>(); 
 		loadedDataValues.addAll(oldData.data.values());
 		ArrayList<Long> loadedDataTimes = new ArrayList<>();
@@ -99,16 +86,16 @@ public class Analyzer {
 
 		ArrayList<OTTS> bestOTTSs = null;
 
-		if (loadedDataValues.size() >= maximumOffsetFromPresent && nearPastDataValues.size() >= analyzeWindowSize) {
+		if (loadedDataValues.size() >= maximumOffsetFromPresent && nearPastDataValues.size() >= run.analyzeWindowSize) {
 
 			ArrayList<OTTS> ottsCandidates = new ArrayList<OTTS>();
 
 			for (int offset = 0; offset < maximumOffsetFromPresent; offset++) {
-				Long timestamp = loadedDataTimes.get(loadedDataTimes.size()-1-analyzeWindowSize-offset);
+				Long timestamp = loadedDataTimes.get(loadedDataTimes.size()-1-run.analyzeWindowSize-offset); //Bug javalangindexoutofboundsexception: -1. Happens when there isn't enough data.
 				Double similarity = 0.0;
-				for (int i = 0; i < analyzeWindowSize; i++){
+				for (int i = 0; i < run.analyzeWindowSize; i++){
 					//This made sense when it was made <3 Don't alter much.
-					similarity += Math.abs(loadedDataValues.get(loadedDataValues.size()-1-analyzeWindowSize-offset+i) - nearPastDataValues.get(i));
+					similarity += Math.abs(loadedDataValues.get(loadedDataValues.size()-1-run.analyzeWindowSize-offset+i) - nearPastDataValues.get(i));
 				}
 				//Offset is most probably useless here.
 				ottsCandidates.add(new OTTS(offset, timestamp ,similarity));
@@ -125,7 +112,7 @@ public class Analyzer {
 					int j=0;
 					@Override
 					public void accept(Long t, Double u) {
-						if(j >= analyzeWindowSize){
+						if(j >= run.analyzeWindowSize){
 							return;
 						} else if(t.equals(otts.timestamp)){
 							record = true;
@@ -142,9 +129,10 @@ public class Analyzer {
 					}
 				});
 			}
+			
 			return calculateFuture(startingTimestamp, guessedData);
 		} else {
-			System.out.println("not enough data");
+			System.out.println("not enough data. Can't predict");
 			return null;
 		}
 

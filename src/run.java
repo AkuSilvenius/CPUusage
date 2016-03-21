@@ -18,10 +18,8 @@ public class run {
 	//public static final String oldDataPath = "./data/CPUData_old.ser";
 	public static final int executionInterval = 150; //milliseconds
 	public static final int saveInterval = 15000;
-	
-	
+	public static final int analyzeWindowSize = 500; //How far do we analyze into the past and how far we predict into the future.
 	public static void main(String [] args) throws Exception {
-		
 
 		Data d = Data.loadClass(dataPath);
 
@@ -33,7 +31,4 @@ public class run {
 		new AnalyzerGUI(a, d);
 
 	}
-
-
-	
 }
