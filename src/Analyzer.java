@@ -129,10 +129,9 @@ public class Analyzer {
 							return;
 						} else if(t.equals(otts.timestamp)){
 							record = true;
-							System.out.println("kissat kissat");
 						}
 						if(record){
-							Long targetTimestamp = startingTimestamp+j*150;
+							Long targetTimestamp = startingTimestamp + j * run.executionInterval;
 							double avg = (1/(double)numAverages)*u;
 							if(guessedData.containsKey(targetTimestamp)){
 								avg += guessedData.get(targetTimestamp);
@@ -143,13 +142,9 @@ public class Analyzer {
 					}
 				});
 			}
-
-			//System.out.println("BesTOTTS timestamp: " + bestOTTS.timestamp + " BestOTTS similarity: " + bestOTTS.similarity + " BestOTTS offset: " + bestOTTS.offset);
-			System.out.println("Analyzed something: " + guessedData.size());
 			return calculateFuture(startingTimestamp, guessedData);
 		} else {
-			double neededRunTime = (double) ( (double) analyzeWindowSize * ((double) run.executionInterval/1000))*2;
-			System.out.println("not enough data. Software needs to run for: " + neededRunTime + " seconds. Reduce analyzeWindowSize to reduce time.");
+			System.out.println("not enough data");
 			return null;
 		}
 

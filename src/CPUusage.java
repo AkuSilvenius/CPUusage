@@ -1,7 +1,6 @@
 //package EXPERIMENT;
 
 import java.lang.management.ManagementFactory;
-import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.management.Attribute;
@@ -43,7 +42,6 @@ public class CPUusage {
 			public void run() {
 				try {
 					Double cpu = getSystemCpuLoad();
-				//	System.out.println(cpu);
 					data.data.put(System.currentTimeMillis(), cpu);
 
 				} catch (Exception e) {
@@ -57,8 +55,6 @@ public class CPUusage {
 			@Override
 			public void run() {
 				try {
-					Calendar now = Calendar.getInstance();
-					System.out.println("Saved data");
 					Data.save(data, run.dataPath);
 					
 				} catch (Exception e) {

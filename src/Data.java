@@ -3,11 +3,8 @@
 
 import java.io.*;
 import java.io.Serializable;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentSkipListMap;
-import java.util.concurrent.ConcurrentSkipListSet;
 
 /**
  * CPU usage monitoring and prediction
@@ -74,9 +71,7 @@ public class Data implements Serializable {
 
 	public static Data loadClass(String filePath) {
 
-		// lataa ja palauta d tai null jos ei l�ydy
-		(new Throwable()).printStackTrace();
-		
+		// lataa ja palauta d tai null jos ei loydy
 		Data d = null;
 
 		try {
@@ -85,8 +80,6 @@ public class Data implements Serializable {
 			d = (Data) in.readObject();
 			in.close();
 			fileIn.close();
-
-			//System.out.println("d.cpu: " + d.cpu);
 			return d;
 
 		} catch (IOException i) {
