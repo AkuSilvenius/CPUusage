@@ -12,13 +12,10 @@ public class run {
 	
 	
 	public static final String dataPath = "./data/CPUData.ser";
-	public static final String oldDataPath = "./data/CPUData.ser";
 	
-	//TODO: make this point to a known good reference data captured in "lab conditions"
-	//public static final String oldDataPath = "./data/CPUData_old.ser";
-	public static final int executionInterval = 150; //milliseconds
+	public static final int executionInterval = 500; //CPULoad only changes every 0.5 seconds or so.
 	public static final int saveInterval = 15000;
-	public static final int analyzeWindowSize = 500; //How far do we analyze into the past and how far we predict into the future.
+	public static final int analyzeWindowSize = 50; //How far do we analyze into the past and how far we predict into the future.
 	public static void main(String [] args) throws Exception {
 
 		Data d = Data.loadClass(dataPath);

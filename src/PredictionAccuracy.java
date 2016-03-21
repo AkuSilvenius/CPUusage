@@ -15,7 +15,6 @@ public class PredictionAccuracy implements Runnable {
 		try {
 			Thread.sleep(run.executionInterval * run.analyzeWindowSize); //Wait until the prediction has been fulfilled.
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -32,7 +31,6 @@ public class PredictionAccuracy implements Runnable {
 			accuracySum = accuracySum + (1 - Math.abs(futureCPU - oldDataList.get(oldDataList.size() - i - 1)));
 			i++;
 		}
-		
-		System.out.println("accuracy: " + accuracySum/run.analyzeWindowSize*100);
+		System.out.println("accuracy: " + accuracySum/run.analyzeWindowSize*100); //How to get this number to UI?
 	}
 }

@@ -64,14 +64,14 @@ public class Analyzer {
 	//TODO: This will crash if "Guess future" is pressed too many times in a second as the files are still open from the last time and threading and such.
 	public SortedMap<Long, Double> analyze(Data data) {
 
-		if(!(new File(run.oldDataPath)).exists()){
+		if(!(new File(run.dataPath)).exists()){
 			System.out.println("No data saved yet. Not gonna guess anything.");
 			return null;
 		}
 		
 		Long startingTimestamp = System.currentTimeMillis();
 		
-		Data oldData = Data.loadClass(run.oldDataPath);
+		Data oldData = Data.loadClass(run.dataPath);
 
 		ArrayList<Double> nearPastDataValues = new ArrayList<>();
 		nearPastDataValues.addAll(data.data.values());

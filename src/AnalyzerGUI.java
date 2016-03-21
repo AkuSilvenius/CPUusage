@@ -13,13 +13,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import java.util.SortedMap;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
-public class AnalyzerGUI extends JFrame implements Callable<String> {
+public class AnalyzerGUI extends JFrame{
 
 	private static final Dimension windowSize = new Dimension(800, 600);
 	
@@ -30,14 +25,6 @@ public class AnalyzerGUI extends JFrame implements Callable<String> {
 	
 	private Analyzer analyzer;
 	private Data data;
-	
-	
-	@Override
-	public String call() throws Exception {
-		Thread.sleep(5000);
-		return "asf";
-	}
-
 	/**
 	 * Create the frame.
 	 */
@@ -46,7 +33,6 @@ public class AnalyzerGUI extends JFrame implements Callable<String> {
 		this.data = data;
 		
 		GraphPanel gp = new GraphPanel(data);
-		
 		buttonAnalyze = new JButton();
 		dataScrollPane = new JScrollPane();
 		
@@ -62,13 +48,14 @@ public class AnalyzerGUI extends JFrame implements Callable<String> {
 		buttonAnalyze.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+				buttonAnalyze.setEnabled(false);
 				SortedMap<Long, Double> futureData = analyzer.analyze(data);
 				gp.setFuture(futureData);
 				(new Thread(new PredictionAccuracy(data, futureData))).start();
-				
+				buttonAnalyze.setEnabled(true);
 			}
 		});
+		
 		
 		scaleSlider = new JSlider();
 		scaleSlider.setMinimum(1);

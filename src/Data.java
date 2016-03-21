@@ -39,34 +39,6 @@ public class Data implements Serializable {
 
 	}
 
-	/*
-	public static ConcurrentMap<Long, Double> load(String filePath) {
-
-		// lataa ja palauta d tai null jos ei loydy
-
-		Data d = null;
-		
-		try {
-			FileInputStream fileIn = new FileInputStream(filePath);
-			ObjectInputStream in = new ObjectInputStream(fileIn);
-			d = (Data) in.readObject();
-			in.close();
-			fileIn.close();
-
-		} catch (IOException i) {
-			i.printStackTrace();
-			return null;
-		} catch (ClassNotFoundException c) {
-			System.out.println("Data class not found");
-			c.printStackTrace();
-			return null;
-		} 
-		 
-		return d.data;
-
-	}
-	*/
-
 	public static Data loadClass(String filePath) {
 
 		// lataa ja palauta d tai null jos ei loydy
